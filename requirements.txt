@@ -49,5 +49,5 @@ torch==2.3.1
 tqdm==4.66.4
 typing_extensions==4.12.1
 urllib3==2.2.1
-whisper-timestamped==1.15.4
+whisper-timestamped
 yarl==1.9.4
