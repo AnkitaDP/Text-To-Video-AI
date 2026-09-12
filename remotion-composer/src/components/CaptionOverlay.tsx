@@ -52,7 +52,7 @@ const PageRenderer: React.FC<{
   fontSize,
   color,
   highlightColor,
-  backgroundColor,
+  backgroundColor: _backgroundColor,
   fontFamily,
 }) => {
   const frame = useCurrentFrame();
@@ -79,9 +79,6 @@ const PageRenderer: React.FC<{
         style={{
           opacity: entrance,
           transform: `translateY(${interpolate(entrance, [0, 1], [30, 0])}px)`,
-          backgroundColor,
-          borderRadius: 18,
-          padding: "18px 28px",
           maxWidth: 880,
           textAlign: "center",
           boxSizing: "border-box",
@@ -93,9 +90,9 @@ const PageRenderer: React.FC<{
             fontSize,
             fontWeight: 700,
             fontFamily,
-            lineHeight: 1.25,
+            lineHeight: 1.3,
             whiteSpace: "pre-wrap",
-            display: "inline",
+            wordSpacing: "-4px",
           }}
         >
           {" "}
@@ -111,9 +108,7 @@ const PageRenderer: React.FC<{
                     : isPast
                       ? color
                       : `${color}99`,
-                  textShadow: isActive
-                    ? `0 0 20px ${highlightColor}66, 0 2px 4px rgba(0,0,0,0.5)`
-                    : "0 2px 4px rgba(0,0,0,0.5)",
+                  textShadow: ` 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 3px 8px rgba(0, 0, 0, 0.9) `,
                 }}
               >
                 {" "}
@@ -132,8 +127,8 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
   fontSize = 52,
   color = "#F8FAFC",
   highlightColor = "#22D3EE",
-  backgroundColor = "rgba(15, 23, 42, 0.78)",
-  fontFamily = "Space Grotesk, Inter, system-ui, sans-serif",
+  backgroundColor,
+  fontFamily = "Arial, sans-serif",
 }) => {
   const { fps } = useVideoConfig();
   const pages = buildPages(words, wordsPerPage);
@@ -155,7 +150,7 @@ export const CaptionOverlay: React.FC<CaptionOverlayProps> = ({
               fontSize={fontSize}
               color={color}
               highlightColor={highlightColor}
-              backgroundColor={backgroundColor}
+              backgroundColor={backgroundColor ?? "transparent"}
               fontFamily={fontFamily}
             />{" "}
           </Sequence>
