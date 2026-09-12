@@ -14,7 +14,11 @@ import { loadFont } from "@remotion/google-fonts/SpaceGrotesk";
 
 // Resolve asset path — handle URLs, absolute paths (Windows/Unix), and public/ relative paths
 function resolveAsset(src: string): string {
-  if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:")) {
+  if (
+    src.startsWith("http://") ||
+    src.startsWith("https://") ||
+    src.startsWith("data:")
+  ) {
     return src;
   }
   // Strip any file:// prefix
@@ -62,9 +66,15 @@ const { fontFamily } = loadFont("normal", {
 // Parse hex color to RGB components
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const clean = hex.replace("#", "");
-  const bigint = parseInt(clean.length === 3
-    ? clean.split("").map(c => c + c).join("")
-    : clean, 16);
+  const bigint = parseInt(
+    clean.length === 3
+      ? clean
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : clean,
+    16,
+  );
   return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
 }
 
@@ -117,11 +127,46 @@ const AnimatedBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
   const orbColors = theme.chartColors.slice(0, 5);
   const orbOpacity = light ? 0.06 : 0.08;
   const orbs = [
-    { x: 20, y: 30, size: 300, color: orbColors[0] || primary, speedX: 7, speedY: 11 },
-    { x: 70, y: 60, size: 250, color: orbColors[1] || accent, speedX: 9, speedY: 8 },
-    { x: 40, y: 80, size: 200, color: orbColors[2] || primary, speedX: 13, speedY: 6 },
-    { x: 80, y: 20, size: 350, color: orbColors[3] || accent, speedX: 11, speedY: 14 },
-    { x: 10, y: 70, size: 180, color: orbColors[4] || primary, speedX: 8, speedY: 10 },
+    {
+      x: 20,
+      y: 30,
+      size: 300,
+      color: orbColors[0] || primary,
+      speedX: 7,
+      speedY: 11,
+    },
+    {
+      x: 70,
+      y: 60,
+      size: 250,
+      color: orbColors[1] || accent,
+      speedX: 9,
+      speedY: 8,
+    },
+    {
+      x: 40,
+      y: 80,
+      size: 200,
+      color: orbColors[2] || primary,
+      speedX: 13,
+      speedY: 6,
+    },
+    {
+      x: 80,
+      y: 20,
+      size: 350,
+      color: orbColors[3] || accent,
+      speedX: 11,
+      speedY: 14,
+    },
+    {
+      x: 10,
+      y: 70,
+      size: 180,
+      color: orbColors[4] || primary,
+      speedX: 8,
+      speedY: 10,
+    },
   ];
 
   // Grid and overlay colors adapt to light vs dark backgrounds
@@ -314,7 +359,15 @@ export interface ExplainerProps {
 // Image Extensions
 // ---------------------------------------------------------------------------
 
-const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif", ".webp"];
+const IMAGE_EXTENSIONS = [
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".bmp",
+  ".tiff",
+  ".tif",
+  ".webp",
+];
 const VIDEO_EXTENSIONS = [".mp4", ".mov", ".webm", ".avi", ".mkv"];
 
 function isImage(source: string): boolean {
@@ -357,10 +410,15 @@ const ImageScene: React.FC<{ src: string; animation?: string }> = ({
 
   // Fade-out for crossfade effect
   const fadeOutStart = durationInFrames - 8;
-  const fadeOut = interpolate(frame, [fadeOutStart, durationInFrames], [1, 0.3], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const fadeOut = interpolate(
+    frame,
+    [fadeOutStart, durationInFrames],
+    [1, 0.3],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
 
   let scale = 1;
   let translateX = 0;
@@ -426,10 +484,15 @@ const VideoScene: React.FC<{ src: string; startFrom?: number }> = ({
 
   const fadeIn = spring({ frame, fps, config: { damping: 20 } });
   const fadeOutStart = durationInFrames - 8;
-  const fadeOut = interpolate(frame, [fadeOutStart, durationInFrames], [1, 0.3], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const fadeOut = interpolate(
+    frame,
+    [fadeOutStart, durationInFrames],
+    [1, 0.3],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
 
   return (
     <AbsoluteFill style={{ background: "#0F172A" }}>
@@ -528,7 +591,10 @@ const BackgroundVideoLayer: React.FC<{
   );
 };
 
-const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme }) => {
+const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({
+  cut,
+  theme,
+}) => {
   // Wrap component with background video or image if specified
   const maybeWrapWithBg = (element: React.ReactElement) => {
     if (cut.backgroundVideo) {
@@ -558,43 +624,78 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
   // Resolve the scene element based on cut type, then wrap with backgroundImage if set
   // Use transparent bg so the animated gradient background shows through
   // When no explicit backgroundColor on the cut, inherit from theme
-  const rawBg = (cut.backgroundImage || cut.backgroundVideo) ? "transparent" : (cut.backgroundColor || theme.surfaceColor);
-  const bgColor = (rawBg === theme.backgroundColor || rawBg === "#0F172A" || rawBg === "#0f172a") ? "transparent" : rawBg;
+  const rawBg =
+    cut.backgroundImage || cut.backgroundVideo
+      ? "transparent"
+      : cut.backgroundColor || theme.surfaceColor;
+  const bgColor =
+    rawBg === theme.backgroundColor ||
+    rawBg === "#0F172A" ||
+    rawBg === "#0f172a"
+      ? "transparent"
+      : rawBg;
   const textColor = cut.color || theme.textColor;
   const accent = cut.accentColor || theme.accentColor;
 
   // Explicit component types — use theme-derived defaults for colors
   if (cut.type === "text_card" && cut.text) {
     return maybeWrapWithBg(
-      <TextCard text={cut.text} fontSize={cut.fontSize} color={textColor} backgroundColor={bgColor} />
+      <TextCard
+        text={cut.text}
+        fontSize={cut.fontSize}
+        color={textColor}
+        backgroundColor={bgColor}
+      />,
     );
   }
   if (cut.type === "stat_card" && cut.stat) {
     return maybeWrapWithBg(
-      <StatCard stat={cut.stat} subtitle={cut.subtitle} accentColor={accent} backgroundColor={bgColor} />
+      <StatCard
+        stat={cut.stat}
+        subtitle={cut.subtitle}
+        accentColor={accent}
+        backgroundColor={bgColor}
+      />,
     );
   }
   if (cut.type === "callout" && cut.text) {
     return maybeWrapWithBg(
       <CalloutBox
-        text={cut.text} type={cut.callout_type} title={cut.title}
-        borderColor={accent} backgroundColor={cut.backgroundColor || theme.surfaceColor}
-        textColor={textColor} containerBackgroundColor={bgColor}
-      />
+        text={cut.text}
+        type={cut.callout_type}
+        title={cut.title}
+        borderColor={accent}
+        backgroundColor={cut.backgroundColor || theme.surfaceColor}
+        textColor={textColor}
+        containerBackgroundColor={bgColor}
+      />,
     );
   }
-  if (cut.type === "comparison" && cut.leftLabel && cut.rightLabel && cut.leftValue && cut.rightValue) {
+  if (
+    cut.type === "comparison" &&
+    cut.leftLabel &&
+    cut.rightLabel &&
+    cut.leftValue &&
+    cut.rightValue
+  ) {
     return maybeWrapWithBg(
       <ComparisonCard
-        leftLabel={cut.leftLabel} rightLabel={cut.rightLabel}
-        leftValue={cut.leftValue} rightValue={cut.rightValue}
-        title={cut.title} backgroundColor={bgColor} textColor={textColor}
-      />
+        leftLabel={cut.leftLabel}
+        rightLabel={cut.rightLabel}
+        leftValue={cut.leftValue}
+        rightValue={cut.rightValue}
+        title={cut.title}
+        backgroundColor={bgColor}
+        textColor={textColor}
+      />,
     );
   }
   if (cut.type === "hero_title" && cut.text) {
     return maybeWrapWithBg(
-      <HeroTitle title={cut.text} subtitle={cut.heroSubtitle || cut.subtitle} />
+      <HeroTitle
+        title={cut.text}
+        subtitle={cut.heroSubtitle || cut.subtitle}
+      />,
     );
   }
   if (cut.type === "terminal_scene" && cut.steps) {
@@ -605,10 +706,14 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
         prompt={cut.prompt}
         accentColor={accent}
         backgroundColor={bgColor || theme.backgroundColor}
-      />
+      />,
     );
   }
-  if (cut.type === "screenshot_scene" && cut.backgroundImage && cut.screenshotSteps) {
+  if (
+    cut.type === "screenshot_scene" &&
+    cut.backgroundImage &&
+    cut.screenshotSteps
+  ) {
     return (
       <ScreenshotScene
         backgroundImage={cut.backgroundImage}
@@ -624,39 +729,57 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
   if (cut.type === "bar_chart" && cut.chartData) {
     return maybeWrapWithBg(
       <BarChart
-        data={cut.chartData} title={cut.title} colors={cut.chartColors || theme.chartColors}
+        data={cut.chartData}
+        title={cut.title}
+        colors={cut.chartColors || theme.chartColors}
         animationStyle={(cut.chartAnimation as any) || "grow-up"}
-        showGrid={cut.showGrid} showValues={cut.showValues} backgroundColor={bgColor}
-      />
+        showGrid={cut.showGrid}
+        showValues={cut.showValues}
+        backgroundColor={bgColor}
+      />,
     );
   }
   if (cut.type === "line_chart" && cut.chartSeries) {
     return maybeWrapWithBg(
       <LineChart
-        series={cut.chartSeries} title={cut.title} colors={cut.chartColors || theme.chartColors}
+        series={cut.chartSeries}
+        title={cut.title}
+        colors={cut.chartColors || theme.chartColors}
         animationStyle={(cut.chartAnimation as any) || "draw"}
-        showGrid={cut.showGrid} showMarkers={cut.showMarkers} showLegend={cut.showLegend}
-        xLabel={cut.xLabel} yLabel={cut.yLabel} backgroundColor={bgColor}
-      />
+        showGrid={cut.showGrid}
+        showMarkers={cut.showMarkers}
+        showLegend={cut.showLegend}
+        xLabel={cut.xLabel}
+        yLabel={cut.yLabel}
+        backgroundColor={bgColor}
+      />,
     );
   }
   if (cut.type === "pie_chart" && cut.chartData) {
     return maybeWrapWithBg(
       <PieChart
-        data={cut.chartData} title={cut.title} colors={cut.chartColors || theme.chartColors}
+        data={cut.chartData}
+        title={cut.title}
+        colors={cut.chartColors || theme.chartColors}
         animationStyle={(cut.chartAnimation as any) || "expand"}
-        donut={cut.donut} centerLabel={cut.centerLabel} centerValue={cut.centerValue}
-        showLegend={cut.showLegend} backgroundColor={bgColor}
-      />
+        donut={cut.donut}
+        centerLabel={cut.centerLabel}
+        centerValue={cut.centerValue}
+        showLegend={cut.showLegend}
+        backgroundColor={bgColor}
+      />,
     );
   }
   if (cut.type === "kpi_grid" && cut.chartData) {
     return maybeWrapWithBg(
       <KPIGrid
-        metrics={cut.chartData} title={cut.title} columns={cut.columns}
-        colors={cut.chartColors || theme.chartColors} animationStyle={(cut.chartAnimation as any) || "count-up"}
+        metrics={cut.chartData}
+        title={cut.title}
+        columns={cut.columns}
+        colors={cut.chartColors || theme.chartColors}
+        animationStyle={(cut.chartAnimation as any) || "count-up"}
         backgroundColor={bgColor}
-      />
+      />,
     );
   }
   if (cut.type === "progress_bar" && cut.progress !== undefined) {
@@ -664,25 +787,36 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
       <AbsoluteFill
         style={{
           background: bgColor || theme.surfaceColor,
-          display: "flex", alignItems: "center", justifyContent: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           padding: "80px 120px",
         }}
       >
         {cut.title && (
-          <div style={{
-            position: "absolute", top: 120, fontSize: 48, fontWeight: 700,
-            color: textColor, textAlign: "center", width: "100%",
-          }}>
+          <div
+            style={{
+              position: "absolute",
+              top: 120,
+              fontSize: 48,
+              fontWeight: 700,
+              color: textColor,
+              textAlign: "center",
+              width: "100%",
+            }}
+          >
             {cut.title}
           </div>
         )}
         <ProgressBar
-          progress={cut.progress} label={cut.progressLabel}
+          progress={cut.progress}
+          label={cut.progressLabel}
           color={cut.progressColor || accent}
           animationStyle={(cut.progressAnimation as any) || "fill"}
-          segments={cut.progressSegments} backgroundColor={cut.backgroundColor || theme.surfaceColor}
+          segments={cut.progressSegments}
+          backgroundColor={cut.backgroundColor || theme.surfaceColor}
         />
-      </AbsoluteFill>
+      </AbsoluteFill>,
     );
   }
 
@@ -709,20 +843,32 @@ const SceneRenderer: React.FC<{ cut: Cut; theme: ThemeConfig }> = ({ cut, theme 
   const animation = cut.animation || cut.transform?.animation;
 
   if (cut.source && isImage(cut.source)) {
-    return maybeWrapWithBg(<ImageScene src={cut.source} animation={animation} />);
+    return maybeWrapWithBg(
+      <ImageScene src={cut.source} animation={animation} />,
+    );
   }
 
   if (cut.source && isVideo(cut.source)) {
-    return maybeWrapWithBg(<VideoScene src={cut.source} startFrom={cut.source_in_seconds ?? 0} />);
+    return maybeWrapWithBg(
+      <VideoScene src={cut.source} startFrom={cut.source_in_seconds ?? 0} />,
+    );
   }
 
   // Final fallback — try as image if source exists, otherwise show text_card
   if (cut.source) {
-    return maybeWrapWithBg(<ImageScene src={cut.source} animation={animation} />);
+    return maybeWrapWithBg(
+      <ImageScene src={cut.source} animation={animation} />,
+    );
   }
 
   // No source, no type — render as text card with cut id as fallback
-  return <TextCard text={cut.text || cut.id} color={textColor} backgroundColor={bgColor} />;
+  return (
+    <TextCard
+      text={cut.text || cut.id}
+      color={textColor}
+      backgroundColor={bgColor}
+    />
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -779,7 +925,12 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
   const theme = resolveTheme(props as Record<string, unknown>);
 
   return (
-    <AbsoluteFill style={{ background: theme.backgroundColor, fontFamily: theme.headingFont || fontFamily }}>
+    <AbsoluteFill
+      style={{
+        background: theme.backgroundColor,
+        fontFamily: theme.headingFont || fontFamily,
+      }}
+    >
       {/* Layer 0: Animated gradient background — driven by theme */}
       <AnimatedBackground theme={theme} />
 
@@ -799,11 +950,15 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
       {overlays?.map((overlay, i) => {
         const from = Math.round(overlay.in_seconds * fps);
         const duration = Math.round(
-          (overlay.out_seconds - overlay.in_seconds) * fps
+          (overlay.out_seconds - overlay.in_seconds) * fps,
         );
 
         return (
-          <Sequence key={`overlay-${i}`} from={from} durationInFrames={duration}>
+          <Sequence
+            key={`overlay-${i}`}
+            from={from}
+            durationInFrames={duration}
+          >
             <OverlayRenderer overlay={overlay} />
           </Sequence>
         );
@@ -813,8 +968,8 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
       {captions && captions.length > 0 && (
         <CaptionOverlay
           words={captions}
-          wordsPerPage={6}
-          fontSize={42}
+          wordsPerPage={4}
+          fontSize={52}
           highlightColor={theme.captionHighlightColor}
           backgroundColor={theme.captionBackgroundColor}
         />
@@ -822,7 +977,10 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
 
       {/* Layer 4: Audio — narration */}
       {audio?.narration?.src && (
-        <Audio src={resolveAsset(audio.narration.src)} volume={audio.narration.volume ?? 1} />
+        <Audio
+          src={resolveAsset(audio.narration.src)}
+          volume={audio.narration.volume ?? 1}
+        />
       )}
 
       {/* Layer 4: Audio — music with offset, fade in/out, and optional loop */}
@@ -848,7 +1006,7 @@ export const Explainer: React.FC<ExplainerProps> = (props) => {
               f,
               [totalFrames - fadeOutDur, totalFrames],
               [baseVol, 0],
-              { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+              { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
             );
             return Math.min(fadeIn, fadeOut);
           }}
