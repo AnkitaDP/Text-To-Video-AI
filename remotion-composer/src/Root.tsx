@@ -6,21 +6,13 @@ import {
 } from "./CinematicRenderer";
 import { signalFromTomorrowWithMusicFixture } from "./cinematic/fixtures";
 import { TalkingHead, TalkingHeadProps } from "./TalkingHead";
-import {
-  TitledVideo,
-  calculateTitledVideoMetadata,
-} from "./TitledVideo";
+import { TitledVideo, calculateTitledVideoMetadata } from "./TitledVideo";
 import { EndTag, EndTagProps } from "./components/EndTag";
 import { HeroTitle } from "./components/HeroTitle";
 import { ProductReveal, ProductRevealProps } from "./components/ProductReveal";
 import { CaptionOverlay, WordCaption } from "./components/CaptionOverlay";
 import { CollageBurst, CollageBurstProps } from "./CollageBurst";
 import { LyricOverlay, LyricOverlayProps } from "./LyricOverlay";
-
-// ---------------------------------------------------------------------------
-// Theme System — prevents every video from looking like dark fintech
-// ---------------------------------------------------------------------------
-
 export interface ThemeConfig {
   primaryColor: string;
   accentColor: string;
@@ -37,7 +29,6 @@ export interface ThemeConfig {
   captionHighlightColor: string;
   captionBackgroundColor: string;
 }
-
 export const THEMES: Record<string, ThemeConfig> = {
   "clean-professional": {
     primaryColor: "#2563EB",
@@ -49,7 +40,14 @@ export const THEMES: Record<string, ThemeConfig> = {
     headingFont: "Inter",
     bodyFont: "Inter",
     monoFont: "JetBrains Mono",
-    chartColors: ["#2563EB", "#F59E0B", "#10B981", "#8B5CF6", "#EC4899", "#06B6D4"],
+    chartColors: [
+      "#2563EB",
+      "#F59E0B",
+      "#10B981",
+      "#8B5CF6",
+      "#EC4899",
+      "#06B6D4",
+    ],
     springConfig: { damping: 20, stiffness: 120, mass: 1 },
     transitionDuration: 0.4,
     captionHighlightColor: "#2563EB",
@@ -65,7 +63,14 @@ export const THEMES: Record<string, ThemeConfig> = {
     headingFont: "Space Grotesk",
     bodyFont: "Space Grotesk",
     monoFont: "Fira Code",
-    chartColors: ["#7C3AED", "#EC4899", "#06B6D4", "#F59E0B", "#10B981", "#EF4444"],
+    chartColors: [
+      "#7C3AED",
+      "#EC4899",
+      "#06B6D4",
+      "#F59E0B",
+      "#10B981",
+      "#EF4444",
+    ],
     springConfig: { damping: 12, stiffness: 80, mass: 1 },
     transitionDuration: 0.3,
     captionHighlightColor: "#22D3EE",
@@ -97,29 +102,31 @@ export const THEMES: Record<string, ThemeConfig> = {
     headingFont: "Noto Serif JP",
     bodyFont: "Noto Sans",
     monoFont: "Fira Code",
-    chartColors: ["#FFB347", "#2D5016", "#FF6B9D", "#A8E6CF", "#6B4C8A", "#E8927C"],
+    chartColors: [
+      "#FFB347",
+      "#2D5016",
+      "#FF6B9D",
+      "#A8E6CF",
+      "#6B4C8A",
+      "#E8927C",
+    ],
     springConfig: { damping: 18, stiffness: 60, mass: 1 },
     transitionDuration: 1.0,
     captionHighlightColor: "#FFB347",
     captionBackgroundColor: "rgba(10, 10, 26, 0.8)",
   },
 };
-
-// Default theme when none is specified — uses the existing dark style for backwards compatibility
 export const DEFAULT_THEME = THEMES["flat-motion-graphics"];
-
 export function resolveTheme(props: Record<string, unknown>): ThemeConfig {
   const themeName = (props.theme as string) || (props.playbook as string);
   if (themeName && THEMES[themeName]) {
     return THEMES[themeName];
   }
-  // Allow custom theme passed as full object
   if (props.themeConfig && typeof props.themeConfig === "object") {
     return { ...DEFAULT_THEME, ...(props.themeConfig as Partial<ThemeConfig>) };
   }
   return DEFAULT_THEME;
 }
-
 const calculateMetadata: CalculateMetadataFunction<ExplainerProps> = async ({
   props,
 }) => {
@@ -128,28 +135,23 @@ const calculateMetadata: CalculateMetadataFunction<ExplainerProps> = async ({
     return { durationInFrames: 30 * 60 };
   }
   const lastEnd = Math.max(...cuts.map((c) => c.out_seconds || 0));
-  // Add 1 second padding for final fade
   return { durationInFrames: Math.ceil((lastEnd + 1) * 30) };
 };
-
 export const Root: React.FC = () => {
   return (
     <>
+      {" "}
+      {/* Main short-video composition */}{" "}
       <Composition
         id="Explainer"
         component={Explainer}
         durationInFrames={30 * 60}
         fps={30}
-        width={1920}
-        height={1080}
-        defaultProps={{
-          cuts: [],
-          overlays: [],
-          captions: [],
-          audio: {},
-        }}
+        width={1080}
+        height={1920}
+        defaultProps={{ cuts: [], overlays: [], captions: [], audio: {} }}
         calculateMetadata={calculateMetadata}
-      />
+      />{" "}
       <Composition
         id="CinematicRenderer"
         component={CinematicRenderer}
@@ -164,7 +166,7 @@ export const Root: React.FC = () => {
           signalLineCount: 18,
         }}
         calculateMetadata={calculateCinematicMetadata}
-      />
+      />{" "}
       <Composition
         id="SignalFromTomorrowWithMusic"
         component={CinematicRenderer}
@@ -174,7 +176,7 @@ export const Root: React.FC = () => {
         height={1080}
         defaultProps={signalFromTomorrowWithMusicFixture}
         calculateMetadata={calculateCinematicMetadata}
-      />
+      />{" "}
       <Composition
         id="TalkingHead"
         component={TalkingHead}
@@ -190,7 +192,7 @@ export const Root: React.FC = () => {
           fontSize: 52,
           highlightColor: "#22D3EE",
         }}
-      />
+      />{" "}
       <Composition
         id="TitledVideo"
         component={TitledVideo}
@@ -208,7 +210,7 @@ export const Root: React.FC = () => {
           accentColor: "#F5C470",
         }}
         calculateMetadata={calculateTitledVideoMetadata}
-      />
+      />{" "}
       <Composition
         id="HeroTitle"
         component={HeroTitle}
@@ -220,7 +222,7 @@ export const Root: React.FC = () => {
           title: "THE CALIBRATORS",
           subtitle: "The People Who Define Reality",
         }}
-      />
+      />{" "}
       <Composition
         id="ProductReveal"
         component={ProductReveal}
@@ -228,15 +230,17 @@ export const Root: React.FC = () => {
         fps={30}
         width={1280}
         height={720}
-        defaultProps={{
-          productImage: "airnothing/product.png",
-          productName: "AirNothing Pro Max Ultra",
-          price: "Starting at $999",
-          tagline: "Nothing included.",
-          closer: "Less is nothing.",
-          accentColor: "#00D4FF",
-        } as ProductRevealProps}
-      />
+        defaultProps={
+          {
+            productImage: "airnothing/product.png",
+            productName: "AirNothing Pro Max Ultra",
+            price: "Starting at $999",
+            tagline: "Nothing included.",
+            closer: "Less is nothing.",
+            accentColor: "#00D4FF",
+          } as ProductRevealProps
+        }
+      />{" "}
       <Composition
         id="ProductRevealVertical"
         component={ProductReveal}
@@ -244,30 +248,32 @@ export const Root: React.FC = () => {
         fps={30}
         width={720}
         height={1280}
-        defaultProps={{
-          productImage: "airnothing/product.png",
-          productName: "AirNothing Pro Max Ultra",
-          price: "Starting at $999",
-          tagline: "Nothing included.",
-          closer: "Less is nothing.",
-          accentColor: "#00D4FF",
-        } as ProductRevealProps}
-      />
+        defaultProps={
+          {
+            productImage: "airnothing/product.png",
+            productName: "AirNothing Pro Max Ultra",
+            price: "Starting at $999",
+            tagline: "Nothing included.",
+            closer: "Less is nothing.",
+            accentColor: "#00D4FF",
+          } as ProductRevealProps
+        }
+      />{" "}
       <Composition
         id="CaptionOverlayOnly"
         component={CaptionOverlay}
         durationInFrames={30 * 300}
         fps={30}
-        width={1920}
-        height={1080}
+        width={1080}
+        height={1920}
         defaultProps={{
           words: [] as WordCaption[],
-          wordsPerPage: 3,
+          wordsPerPage: 4,
           fontSize: 58,
           highlightColor: "#FACC15",
           backgroundColor: "rgba(15, 23, 42, 0.75)",
         }}
-      />
+      />{" "}
       <Composition
         id="CollageBurst"
         component={CollageBurst}
@@ -275,14 +281,16 @@ export const Root: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
-        defaultProps={{
-          backgroundSrc: "",
-          backgroundInSeconds: 0,
-          curtainStartSeconds: 1.5,
-          curtainEndSeconds: 3.0,
-          clips: [],
-        } as CollageBurstProps}
-      />
+        defaultProps={
+          {
+            backgroundSrc: "",
+            backgroundInSeconds: 0,
+            curtainStartSeconds: 1.5,
+            curtainEndSeconds: 3.0,
+            clips: [],
+          } as CollageBurstProps
+        }
+      />{" "}
       <Composition
         id="LyricOverlay"
         component={LyricOverlay}
@@ -290,46 +298,45 @@ export const Root: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
-        defaultProps={{
-          videoSrc: "",
-          lyrics: [],
-          bottomY: 0.88,
-        } as LyricOverlayProps}
-      />
+        defaultProps={
+          { videoSrc: "", lyrics: [], bottomY: 0.88 } as LyricOverlayProps
+        }
+      />{" "}
       <Composition
         id="EndTag"
         component={EndTag}
-        // 5.5s at 30fps = 165 frames. Render CLI can override via --props.
         durationInFrames={165}
         fps={30}
         width={1920}
         height={1080}
-        defaultProps={{
-          text: "THE CITY KEEPS ITS OWN VIGIL.",
-          palette: "cool_offwhite_on_black",
-          fadeInSeconds: 0.6,
-          holdSeconds: 4.3,
-          fadeOutSeconds: 0.6,
-        } as EndTagProps}
-      />
+        defaultProps={
+          {
+            text: "THE CITY KEEPS ITS OWN VIGIL.",
+            palette: "cool_offwhite_on_black",
+            fadeInSeconds: 0.6,
+            holdSeconds: 4.3,
+            fadeOutSeconds: 0.6,
+          } as EndTagProps
+        }
+      />{" "}
       <Composition
         id="EndTagOverlay"
         component={EndTag}
-        // 8.19s at 30fps = 246 frames. Render CLI can override via --props.
-        // Intended to be composited on top of body footage, not concat'd.
         durationInFrames={246}
         fps={30}
         width={1920}
         height={1080}
-        defaultProps={{
-          text: "EARN THE LIGHT.",
-          palette: "cool_offwhite_on_black",
-          fadeInSeconds: 1.0,
-          holdSeconds: 5.69,
-          fadeOutSeconds: 1.5,
-          overlay: true,
-        } as EndTagProps}
-      />
+        defaultProps={
+          {
+            text: "EARN THE LIGHT.",
+            palette: "cool_offwhite_on_black",
+            fadeInSeconds: 1.0,
+            holdSeconds: 5.69,
+            fadeOutSeconds: 1.5,
+            overlay: true,
+          } as EndTagProps
+        }
+      />{" "}
     </>
   );
 };
